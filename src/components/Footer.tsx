@@ -32,7 +32,7 @@ const Footer = () => (
       </div>
     </div>
     <div className="border-t border-border py-4 text-center text-xs text-muted-foreground">
-      © 2025 Aerisafety. Sva prava zadržana.
+      © 2026 Aerisafety. Sva prava zadržana.. Sva prava zadržana.
     </div>
   </footer>
 );

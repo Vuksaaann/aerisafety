@@ -23,7 +23,7 @@ const CitizensPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("citizen_reports")
-        .select("*, profiles!citizen_reports_user_id_fkey(first_name, last_name)")
+        .select("*, profiles(first_name, last_name)")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
