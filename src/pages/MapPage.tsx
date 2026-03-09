@@ -1,7 +1,7 @@
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
-import { sensorLocations, getAqiLevel } from "@/data/mockData";
-import AqiEmoji from "@/components/AqiEmoji";
+import { useEffect, useRef } from "react";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { sensorLocations, getAqiLevel } from "@/data/mockData";
 
 const AqiLegend = () => (
   <div className="absolute bottom-4 left-4 z-[1000] bg-card border border-border rounded-lg p-3">
@@ -24,49 +24,81 @@ const AqiLegend = () => (
 );
 
 const MapPage = () => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    const map = L.map(mapRef.current, {
+      center: [44.2, 20.9],
+      zoom: 7,
+      zoomControl: false,
+    });
+
+    L.tileLayer("https://cartodb-basemaps-a.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+    }).addTo(map);
+
+    sensorLocations.forEach((loc) => {
+      const info = getAqiLevel(loc.aqi);
+
+      const marker = L.circleMarker([loc.lat, loc.lng], {
+        radius: 22,
+        fillColor: info.color,
+        fillOpacity: 0.85,
+        color: info.color,
+        weight: 2,
+      }).addTo(map);
+
+      // Add AQI number as a tooltip that's always visible
+      marker.bindTooltip(String(loc.aqi), {
+        permanent: true,
+        direction: "center",
+        className: "aqi-label",
+      });
+
+      marker.bindPopup(`
+        <div style="font-family: Rajdhani, sans-serif; min-width: 180px; font-size: 14px;">
+          <p style="font-weight: bold; font-size: 16px; margin-bottom: 4px;">${loc.name}</p>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-weight: bold; font-size: 18px; color: ${info.color};">AQI ${loc.aqi}</span>
+            <span style="font-size: 12px;">${info.label}</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 12px;">
+            <span>PM2.5: <b>${loc.pm25}</b> μg/m³</span>
+            <span>PM10: <b>${loc.pm10}</b> μg/m³</span>
+            <span>Temp: <b>${loc.temp}</b> °C</span>
+            <span>Vlažnost: <b>${loc.humidity}</b>%</span>
+          </div>
+          <p style="font-size: 11px; margin-top: 8px; opacity: 0.7;">Poslednje ažuriranje: ${loc.lastUpdate}</p>
+        </div>
+      `);
+    });
+
+    mapInstanceRef.current = map;
+
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+    };
+  }, []);
+
   return (
     <div className="relative" style={{ height: "calc(100vh - 64px)" }}>
-      <MapContainer
-        center={[44.2, 20.9]}
-        zoom={7}
-        style={{ height: "100%", width: "100%" }}
-        zoomControl={false}
-      >
-        <TileLayer
-          url="https://cartodb-basemaps-a.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-        />
-        {sensorLocations.map((loc) => {
-          const info = getAqiLevel(loc.aqi);
-          return (
-            <CircleMarker
-              key={loc.id}
-              center={[loc.lat, loc.lng]}
-              radius={22}
-              pathOptions={{ fillColor: info.color, fillOpacity: 0.85, color: info.color, weight: 2 }}
-            >
-              <Popup>
-                <div className="font-rajdhani text-sm" style={{ minWidth: 180 }}>
-                  <p className="font-bold text-base mb-1">{loc.name}</p>
-                  <div className="flex items-center gap-2 mb-2">
-                    <AqiEmoji level={info.level} size={32} />
-                    <span className="font-bold text-lg" style={{ color: info.color }}>AQI {loc.aqi}</span>
-                    <span className="text-xs">{info.label}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-1 text-xs">
-                    <span>PM2.5: <b>{loc.pm25}</b> μg/m³</span>
-                    <span>PM10: <b>{loc.pm10}</b> μg/m³</span>
-                    <span>Temp: <b>{loc.temp}</b> °C</span>
-                    <span>Vlažnost: <b>{loc.humidity}</b>%</span>
-                  </div>
-                  <p className="text-xs mt-2 opacity-70">Poslednje ažuriranje: {loc.lastUpdate}</p>
-                </div>
-              </Popup>
-            </CircleMarker>
-          );
-        })}
-      </MapContainer>
+      <div ref={mapRef} style={{ height: "100%", width: "100%" }} />
       <AqiLegend />
+      <style>{`
+        .aqi-label {
+          background: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
+          color: #fff !important;
+          font-family: Rajdhani, sans-serif !important;
+          font-weight: 700 !important;
+          font-size: 13px !important;
+        }
+      `}</style>
     </div>
   );
 };
