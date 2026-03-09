@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { Wifi, Smartphone, Wrench, BatteryFull, HeadphonesIcon, Activity, Minus, Plus, X, ShoppingCart } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
-
-interface CartItem {
-  qty: number;
-}
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const features = [
   { icon: Activity, label: "Merenje u realnom vremenu" },
@@ -17,15 +14,31 @@ const features = [
 
 const SensorsPage = () => {
   const [qty, setQty] = useState(1);
-  const [cart, setCart] = useState<CartItem | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-
+  const [checkingOut, setCheckingOut] = useState(false);
+  const { toast } = useToast();
   const price = 4999;
 
   const addToCart = () => {
-    setCart({ qty });
     setDrawerOpen(true);
     toast({ title: "Dodato u korpu!", description: `${qty}x Aerisafety Senzor` });
+  };
+
+  const handleCheckout = async () => {
+    setCheckingOut(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-payment", {
+        body: { quantity: qty },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      toast({ title: "Greška", description: err.message || "Došlo je do greške pri plaćanju.", variant: "destructive" });
+    } finally {
+      setCheckingOut(false);
+    }
   };
 
   return (
@@ -54,7 +67,7 @@ const SensorsPage = () => {
             <button onClick={addToCart} className="flex-1 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:opacity-90 transition-opacity">
               Dodaj u korpu
             </button>
-            <button onClick={() => { addToCart(); }} className="flex-1 py-3 border border-nav text-nav font-semibold rounded-lg hover:text-nav-hover hover:border-nav-hover transition-colors">
+            <button onClick={() => { addToCart(); handleCheckout(); }} className="flex-1 py-3 border border-nav text-nav font-semibold rounded-lg hover:text-nav-hover hover:border-nav-hover transition-colors">
               Kupi odmah
             </button>
           </div>
@@ -85,26 +98,26 @@ const SensorsPage = () => {
                 <X size={20} />
               </button>
             </div>
-            {cart && (
-              <>
-                <div className="flex-1">
-                  <div className="flex justify-between items-center py-4 border-b border-border">
-                    <div>
-                      <p className="font-semibold text-foreground">Aerisafety Senzor</p>
-                      <p className="text-sm text-muted-foreground">Količina: {cart.qty}</p>
-                    </div>
-                    <p className="font-bold text-foreground">{(price * cart.qty).toLocaleString("sr-RS")} RSD</p>
-                  </div>
-                  <div className="flex justify-between items-center py-4 font-bold text-lg text-foreground">
-                    <span>Ukupno</span>
-                    <span>{(price * cart.qty).toLocaleString("sr-RS")} RSD</span>
-                  </div>
+            <div className="flex-1">
+              <div className="flex justify-between items-center py-4 border-b border-border">
+                <div>
+                  <p className="font-semibold text-foreground">Aerisafety Senzor</p>
+                  <p className="text-sm text-muted-foreground">Količina: {qty}</p>
                 </div>
-                <button className="w-full py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:opacity-90 transition-opacity">
-                  Nastavi na plaćanje
-                </button>
-              </>
-            )}
+                <p className="font-bold text-foreground">{(price * qty).toLocaleString("sr-RS")} RSD</p>
+              </div>
+              <div className="flex justify-between items-center py-4 font-bold text-lg text-foreground">
+                <span>Ukupno</span>
+                <span>{(price * qty).toLocaleString("sr-RS")} RSD</span>
+              </div>
+            </div>
+            <button
+              onClick={handleCheckout}
+              disabled={checkingOut}
+              className="w-full py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {checkingOut ? "Preusmjeravanje..." : "Nastavi na plaćanje"}
+            </button>
           </div>
         </div>
       )}
