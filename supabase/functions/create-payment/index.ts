@@ -53,8 +53,9 @@ serve(async (req) => {
       shipping_address_collection: {
         allowed_countries: ["RS"],
       },
-      success_url: `${req.headers.get("origin")}/placanje-uspesno`,
-      cancel_url: `${req.headers.get("origin")}/senzori`,
+      const origin = req.headers.get("origin") || req.headers.get("referer") || "https://rxshzdcyudmuvzskngdn.lovableproject.com";
+      success_url: `${origin}/placanje-uspesno`,
+      cancel_url: `${origin}/senzori`,
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
