@@ -40,6 +40,8 @@ serve(async (req) => {
       }
     }
 
+    const origin = req.headers.get("origin") || req.headers.get("referer")?.replace(/\/$/, "") || "https://rxshzdcyudmuvzskngdn.lovableproject.com";
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : customerEmail,
@@ -53,7 +55,6 @@ serve(async (req) => {
       shipping_address_collection: {
         allowed_countries: ["RS"],
       },
-      const origin = req.headers.get("origin") || req.headers.get("referer") || "https://rxshzdcyudmuvzskngdn.lovableproject.com";
       success_url: `${origin}/placanje-uspesno`,
       cancel_url: `${origin}/senzori`,
     });
