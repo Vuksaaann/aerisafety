@@ -20,6 +20,22 @@ export const sensorLocations: SensorLocation[] = [
   { id: 6, name: "Čačak", lat: 43.8914, lng: 20.3497, aqi: 310, pm25: 200, pm10: 280, temp: 15, humidity: 75, lastUpdate: "4 min" },
   { id: 7, name: "Pančevo", lat: 44.8708, lng: 20.6403, aqi: 130, pm25: 55, pm10: 85, temp: 19, humidity: 60, lastUpdate: "7 min" },
   { id: 8, name: "Zrenjanin", lat: 45.3816, lng: 20.3894, aqi: 35, pm25: 8, pm10: 18, temp: 15, humidity: 68, lastUpdate: "1 min" },
+  // Belgrade locations
+  { id: 9, name: "Knez Mihailova 30 (Stari Grad)", lat: 44.8184, lng: 20.4560, aqi: 142, pm25: 68, pm10: 98, temp: 19, humidity: 58, lastUpdate: "2 min" },
+  { id: 10, name: "Trg Republike 5 (Stari Grad)", lat: 44.8161, lng: 20.4600, aqi: 138, pm25: 64, pm10: 95, temp: 19, humidity: 57, lastUpdate: "3 min" },
+  { id: 11, name: "Bulevar Kralja Aleksandra 73 (Palilula)", lat: 44.8030, lng: 20.4780, aqi: 165, pm25: 85, pm10: 125, temp: 20, humidity: 55, lastUpdate: "4 min" },
+  { id: 12, name: "Vojvode Stepe 152 (Voždovac)", lat: 44.7780, lng: 20.4750, aqi: 118, pm25: 52, pm10: 78, temp: 18, humidity: 60, lastUpdate: "5 min" },
+  { id: 13, name: "Ustanička 125 (Zvezdara)", lat: 44.7920, lng: 20.4950, aqi: 127, pm25: 58, pm10: 88, temp: 19, humidity: 59, lastUpdate: "3 min" },
+  { id: 14, name: "Požeška 83 (Čukarica)", lat: 44.7830, lng: 20.4150, aqi: 95, pm25: 38, pm10: 62, temp: 17, humidity: 64, lastUpdate: "6 min" },
+  { id: 15, name: "Jurija Gagarina 14 (Novi Beograd)", lat: 44.8100, lng: 20.4050, aqi: 108, pm25: 46, pm10: 72, temp: 18, humidity: 61, lastUpdate: "2 min" },
+  { id: 16, name: "Zemunski kej 43 (Zemun)", lat: 44.8450, lng: 20.4100, aqi: 78, pm25: 30, pm10: 50, temp: 16, humidity: 66, lastUpdate: "4 min" },
+  { id: 17, name: "Bulevar Oslobođenja 167 (Savski Venac)", lat: 44.7950, lng: 20.4500, aqi: 152, pm25: 74, pm10: 108, temp: 19, humidity: 56, lastUpdate: "1 min" },
+  { id: 18, name: "Ugrinovačka 5 (Surčin)", lat: 44.7960, lng: 20.2850, aqi: 62, pm25: 22, pm10: 38, temp: 15, humidity: 72, lastUpdate: "7 min" },
+  { id: 19, name: "Vojvođanska 91 (Zemun)", lat: 44.8400, lng: 20.4000, aqi: 82, pm25: 32, pm10: 54, temp: 16, humidity: 65, lastUpdate: "5 min" },
+  { id: 20, name: "Cara Dušana 207 (Palilula)", lat: 44.8250, lng: 20.4700, aqi: 148, pm25: 70, pm10: 102, temp: 20, humidity: 54, lastUpdate: "3 min" },
+  { id: 21, name: "Rakovička cesta 58 (Rakovica)", lat: 44.7600, lng: 20.4350, aqi: 105, pm25: 44, pm10: 70, temp: 17, humidity: 63, lastUpdate: "4 min" },
+  { id: 22, name: "Batajnički drum 23 (Novi Beograd)", lat: 44.8550, lng: 20.3500, aqi: 72, pm25: 26, pm10: 44, temp: 15, humidity: 68, lastUpdate: "6 min" },
+  { id: 23, name: "Pančevački put 38 (Palilula)", lat: 44.8200, lng: 20.5000, aqi: 175, pm25: 92, pm10: 138, temp: 20, humidity: 53, lastUpdate: "2 min" },
 ];
 
 export const getAqiLevel = (aqi: number) => {

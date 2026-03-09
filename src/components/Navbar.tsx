@@ -31,7 +31,8 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 bg-card border-b border-border">
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
-        <Link to="/" className="text-2xl font-bold tracking-wide" style={{ color: "#FFFFFF" }}>
+        <Link to="/" className="flex items-center gap-2 text-2xl font-bold tracking-wide" style={{ color: "#FFFFFF" }}>
+          <img src={logo} alt="Aerisafety logo" className="h-9 w-9 rounded-full" />
           Aerisafety
         </Link>
 
