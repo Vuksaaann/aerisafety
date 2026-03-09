@@ -48,6 +48,7 @@ const App = () => (
               <Route path="/registracija" element={<RegisterPage />} />
               <Route path="/zaboravljena-lozinka" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route path="/placanje-uspesno" element={<PaymentSuccessPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
