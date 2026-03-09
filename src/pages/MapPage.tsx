@@ -1,12 +1,11 @@
-import { useEffect } from "react";
-import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
 import { sensorLocations, getAqiLevel } from "@/data/mockData";
 import AqiEmoji from "@/components/AqiEmoji";
 import "leaflet/dist/leaflet.css";
 
 const AqiLegend = () => (
   <div className="absolute bottom-4 left-4 z-[1000] bg-card border border-border rounded-lg p-3">
-    <p className="text-xs font-semibold text-foreground mb-2" style={{ color: "#FFF" }}>AQI Skala</p>
+    <p className="text-xs font-semibold mb-2" style={{ color: "#FFF" }}>AQI Skala</p>
     {[
       { range: "0-50", label: "Dobar", color: "#00E400" },
       { range: "51-100", label: "Umeren", color: "#FFFF00" },
@@ -25,12 +24,6 @@ const AqiLegend = () => (
 );
 
 const MapPage = () => {
-  useEffect(() => {
-    // Fix leaflet icon issue
-    const L = require("leaflet");
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-  }, []);
-
   return (
     <div className="relative" style={{ height: "calc(100vh - 64px)" }}>
       <MapContainer
