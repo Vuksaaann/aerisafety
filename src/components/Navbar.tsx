@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
   { to: "/", label: "Početna" },
@@ -13,15 +14,26 @@ const navLinks = [
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const initials = profile
+    ? `${(profile.first_name?.[0] || "").toUpperCase()}${(profile.last_name?.[0] || "").toUpperCase()}`
+    : user?.email?.[0]?.toUpperCase() || "?";
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+    setOpen(false);
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-card border-b border-border">
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
-        <Link to="/" className="text-2xl font-bold text-primary-foreground tracking-wide" style={{ color: "#FFFFFF" }}>
+        <Link to="/" className="text-2xl font-bold tracking-wide" style={{ color: "#FFFFFF" }}>
           Aerisafety
         </Link>
 
-        {/* Desktop links */}
         <div className="hidden md:flex items-center gap-6">
           {navLinks.map((l) => (
             <Link
@@ -39,27 +51,32 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            to="/prijava"
-            className="px-4 py-1.5 text-sm font-semibold border border-nav rounded-lg text-nav hover:text-nav-hover hover:border-nav-hover transition-colors"
-          >
-            Prijava
-          </Link>
-          <Link
-            to="/registracija"
-            className="px-4 py-1.5 text-sm font-semibold rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
-          >
-            Registracija
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                {initials}
+              </div>
+              <button onClick={handleSignOut} className="text-nav hover:text-nav-hover transition-colors" title="Odjava">
+                <LogOut size={18} />
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link to="/prijava" className="px-4 py-1.5 text-sm font-semibold border border-nav rounded-lg text-nav hover:text-nav-hover hover:border-nav-hover transition-colors">
+                Prijava
+              </Link>
+              <Link to="/registracija" className="px-4 py-1.5 text-sm font-semibold rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
+                Registracija
+              </Link>
+            </>
+          )}
         </div>
 
-        {/* Mobile hamburger */}
         <button className="md:hidden text-nav" onClick={() => setOpen(!open)}>
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Mobile drawer */}
       {open && (
         <div className="md:hidden bg-card border-t border-border px-4 pb-4">
           {navLinks.map((l) => (
@@ -75,12 +92,20 @@ const Navbar = () => {
             </Link>
           ))}
           <div className="flex gap-3 mt-4">
-            <Link to="/prijava" onClick={() => setOpen(false)} className="flex-1 text-center px-4 py-2 text-sm font-semibold border border-nav rounded-lg text-nav">
-              Prijava
-            </Link>
-            <Link to="/registracija" onClick={() => setOpen(false)} className="flex-1 text-center px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-primary-foreground">
-              Registracija
-            </Link>
+            {user ? (
+              <button onClick={handleSignOut} className="flex-1 text-center px-4 py-2 text-sm font-semibold border border-nav rounded-lg text-nav">
+                Odjava
+              </button>
+            ) : (
+              <>
+                <Link to="/prijava" onClick={() => setOpen(false)} className="flex-1 text-center px-4 py-2 text-sm font-semibold border border-nav rounded-lg text-nav">
+                  Prijava
+                </Link>
+                <Link to="/registracija" onClick={() => setOpen(false)} className="flex-1 text-center px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-primary-foreground">
+                  Registracija
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
