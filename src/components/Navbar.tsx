@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import logo from "@/assets/AerisafetyLogo.png";
 
 const navLinks = [
   { to: "/", label: "Početna" },
