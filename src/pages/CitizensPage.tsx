@@ -24,6 +24,7 @@ const CitizensPage = () => {
       const { data, error } = await supabase
         .from("citizen_reports")
         .select("*, profiles(first_name, last_name)")
+        .eq("status", "approved")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
