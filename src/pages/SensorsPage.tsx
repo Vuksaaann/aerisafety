@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Wifi, Smartphone, Wrench, BatteryFull, HeadphonesIcon, Activity, Minus, Plus, X, ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import sensorImage from "@/assets/sensor-product.jpg";
 
 const features = [
   { icon: Activity, label: "Merenje u realnom vremenu" },
@@ -45,8 +46,8 @@ const SensorsPage = () => {
     <div className="container mx-auto px-4 py-12">
       {/* Product */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
-        <div className="bg-card border border-border rounded-lg flex items-center justify-center p-12">
-          <Activity size={120} className="text-muted-foreground" />
+        <div className="bg-card border border-border rounded-lg flex items-center justify-center p-6 overflow-hidden">
+          <img src={sensorImage} alt="Aerisafety Senzor" className="max-h-80 object-contain" />
         </div>
         <div className="flex flex-col justify-center">
           <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: "#FFF" }}>Aerisafety Senzor</h1>

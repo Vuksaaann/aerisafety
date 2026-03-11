@@ -1,11 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Search } from "lucide-react";
 import AqiEmoji from "@/components/AqiEmoji";
-import { getAqiLevel, sensorLocations } from "@/data/mockData";
+import { getAqiLevel, sensorLocations, randomizeSensorData } from "@/data/mockData";
 
 const Index = () => {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<typeof sensorLocations[0] | null>(null);
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      randomizeSensorData();
+      setTick(t => t + 1);
+      // Update result if one is selected
+      if (result) {
+        const updated = sensorLocations.find(s => s.id === result.id);
+        if (updated) setResult({ ...updated });
+      }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [result]);
 
   const handleSearch = () => {
     const match = sensorLocations.find((s) =>

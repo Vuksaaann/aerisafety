@@ -11,7 +11,7 @@ export interface SensorLocation {
   lastUpdate: string;
 }
 
-export const sensorLocations: SensorLocation[] = [
+export const baseSensorLocations: SensorLocation[] = [
   { id: 1, name: "Beograd - Centar", lat: 44.8176, lng: 20.4633, aqi: 156, pm25: 78, pm10: 112, temp: 18, humidity: 62, lastUpdate: "5 min" },
   { id: 2, name: "Novi Sad", lat: 45.2671, lng: 19.8335, aqi: 72, pm25: 28, pm10: 45, temp: 16, humidity: 58, lastUpdate: "3 min" },
   { id: 3, name: "Niš", lat: 43.3209, lng: 21.8958, aqi: 210, pm25: 120, pm10: 180, temp: 20, humidity: 55, lastUpdate: "8 min" },
@@ -37,6 +37,30 @@ export const sensorLocations: SensorLocation[] = [
   { id: 22, name: "Batajnički drum 23 (Novi Beograd)", lat: 44.8550, lng: 20.3500, aqi: 72, pm25: 26, pm10: 44, temp: 15, humidity: 68, lastUpdate: "6 min" },
   { id: 23, name: "Pančevački put 38 (Palilula)", lat: 44.8200, lng: 20.5000, aqi: 175, pm25: 92, pm10: 138, temp: 20, humidity: 53, lastUpdate: "2 min" },
 ];
+
+// Mutable copy for live updates
+export let sensorLocations: SensorLocation[] = baseSensorLocations.map(s => ({ ...s }));
+
+export const randomizeSensorData = () => {
+  sensorLocations = baseSensorLocations.map(s => {
+    const aqiDelta = Math.round((Math.random() - 0.5) * 20);
+    const newAqi = Math.max(0, s.aqi + aqiDelta);
+    const pm25Delta = Math.round((Math.random() - 0.5) * 10);
+    const pm10Delta = Math.round((Math.random() - 0.5) * 15);
+    const tempDelta = Math.round((Math.random() - 0.5) * 2);
+    const humDelta = Math.round((Math.random() - 0.5) * 6);
+    return {
+      ...s,
+      aqi: newAqi,
+      pm25: Math.max(0, s.pm25 + pm25Delta),
+      pm10: Math.max(0, s.pm10 + pm10Delta),
+      temp: s.temp + tempDelta,
+      humidity: Math.max(0, Math.min(100, s.humidity + humDelta)),
+      lastUpdate: `${Math.floor(Math.random() * 9) + 1} min`,
+    };
+  });
+  return sensorLocations;
+};
 
 export const getAqiLevel = (aqi: number) => {
   if (aqi <= 50) return { level: 1, label: "Dobar", labelEn: "Good", color: "#00E400" };
