@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Search } from "lucide-react";
 import AqiEmoji from "@/components/AqiEmoji";
-import { getAqiLevel, sensorLocations } from "@/data/mockData";
+import { getAqiLevel, sensorLocations, randomizeSensorData } from "@/data/mockData";
 
 const Index = () => {
   const [query, setQuery] = useState("");
