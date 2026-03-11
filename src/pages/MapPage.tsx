@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { sensorLocations, getAqiLevel } from "@/data/mockData";
+import { sensorLocations, getAqiLevel, randomizeSensorData } from "@/data/mockData";
 
 const AqiLegend = () => (
   <div className="absolute bottom-4 left-4 z-[1000] bg-card border border-border rounded-lg p-3">
