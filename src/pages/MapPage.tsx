@@ -41,45 +41,54 @@ const MapPage = () => {
       attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
     }).addTo(map);
 
-    sensorLocations.forEach((loc) => {
-      const info = getAqiLevel(loc.aqi);
-
-      const marker = L.circleMarker([loc.lat, loc.lng], {
-        radius: 22,
-        fillColor: info.color,
-        fillOpacity: 0.85,
-        color: info.color,
-        weight: 2,
-      }).addTo(map);
-
-      // Add AQI number as a tooltip that's always visible
-      marker.bindTooltip(String(loc.aqi), {
-        permanent: true,
-        direction: "center",
-        className: "aqi-label",
+    const addMarkers = () => {
+      markersRef.current.forEach(m => m.remove());
+      markersRef.current = [];
+      sensorLocations.forEach((loc) => {
+        const info = getAqiLevel(loc.aqi);
+        const marker = L.circleMarker([loc.lat, loc.lng], {
+          radius: 22,
+          fillColor: info.color,
+          fillOpacity: 0.85,
+          color: info.color,
+          weight: 2,
+        }).addTo(map);
+        marker.bindTooltip(String(loc.aqi), {
+          permanent: true,
+          direction: "center",
+          className: "aqi-label",
+        });
+        marker.bindPopup(`
+          <div style="font-family: Rajdhani, sans-serif; min-width: 180px; font-size: 14px;">
+            <p style="font-weight: bold; font-size: 16px; margin-bottom: 4px;">${loc.name}</p>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span style="font-weight: bold; font-size: 18px; color: ${info.color};">AQI ${loc.aqi}</span>
+              <span style="font-size: 12px;">${info.label}</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 12px;">
+              <span>PM2.5: <b>${loc.pm25}</b> μg/m³</span>
+              <span>PM10: <b>${loc.pm10}</b> μg/m³</span>
+              <span>Temp: <b>${loc.temp}</b> °C</span>
+              <span>Vlažnost: <b>${loc.humidity}</b>%</span>
+            </div>
+            <p style="font-size: 11px; margin-top: 8px; opacity: 0.7;">Poslednje ažuriranje: ${loc.lastUpdate}</p>
+          </div>
+        `);
+        markersRef.current.push(marker);
       });
+    };
 
-      marker.bindPopup(`
-        <div style="font-family: Rajdhani, sans-serif; min-width: 180px; font-size: 14px;">
-          <p style="font-weight: bold; font-size: 16px; margin-bottom: 4px;">${loc.name}</p>
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <span style="font-weight: bold; font-size: 18px; color: ${info.color};">AQI ${loc.aqi}</span>
-            <span style="font-size: 12px;">${info.label}</span>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 12px;">
-            <span>PM2.5: <b>${loc.pm25}</b> μg/m³</span>
-            <span>PM10: <b>${loc.pm10}</b> μg/m³</span>
-            <span>Temp: <b>${loc.temp}</b> °C</span>
-            <span>Vlažnost: <b>${loc.humidity}</b>%</span>
-          </div>
-          <p style="font-size: 11px; margin-top: 8px; opacity: 0.7;">Poslednje ažuriranje: ${loc.lastUpdate}</p>
-        </div>
-      `);
-    });
+    addMarkers();
+
+    const interval = setInterval(() => {
+      randomizeSensorData();
+      addMarkers();
+    }, 30000);
 
     mapInstanceRef.current = map;
 
     return () => {
+      clearInterval(interval);
       map.remove();
       mapInstanceRef.current = null;
     };
