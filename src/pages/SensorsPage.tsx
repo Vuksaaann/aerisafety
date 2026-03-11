@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Wifi, Smartphone, Wrench, BatteryFull, HeadphonesIcon, Activity, Minus, Plus, X, ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import sensorImage from "@/assets/sensor-product.jpg";
 
 const features = [
   { icon: Activity, label: "Merenje u realnom vremenu" },
