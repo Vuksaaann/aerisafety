@@ -136,7 +136,7 @@ const CitizensPage = () => {
             return (
               <div key={r.id} className="bg-card border border-border rounded-lg overflow-hidden">
                 {r.image_url && (
-                  <img src={r.image_url} alt={r.title} className="w-full h-48 object-cover" />
+                  <img src={r.image_url} alt={r.title} className="w-full h-48 object-contain bg-card" />
                 )}
                 <div className="p-5">
                   <h3 className="font-bold text-lg mb-2 text-foreground">{r.title}</h3>

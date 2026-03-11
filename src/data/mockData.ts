@@ -38,6 +38,30 @@ export const baseSensorLocations: SensorLocation[] = [
   { id: 23, name: "Pančevački put 38 (Palilula)", lat: 44.8200, lng: 20.5000, aqi: 175, pm25: 92, pm10: 138, temp: 20, humidity: 53, lastUpdate: "2 min" },
 ];
 
+// Mutable copy for live updates
+export let sensorLocations: SensorLocation[] = baseSensorLocations.map(s => ({ ...s }));
+
+export const randomizeSensorData = () => {
+  sensorLocations = baseSensorLocations.map(s => {
+    const aqiDelta = Math.round((Math.random() - 0.5) * 20);
+    const newAqi = Math.max(0, s.aqi + aqiDelta);
+    const pm25Delta = Math.round((Math.random() - 0.5) * 10);
+    const pm10Delta = Math.round((Math.random() - 0.5) * 15);
+    const tempDelta = Math.round((Math.random() - 0.5) * 2);
+    const humDelta = Math.round((Math.random() - 0.5) * 6);
+    return {
+      ...s,
+      aqi: newAqi,
+      pm25: Math.max(0, s.pm25 + pm25Delta),
+      pm10: Math.max(0, s.pm10 + pm10Delta),
+      temp: s.temp + tempDelta,
+      humidity: Math.max(0, Math.min(100, s.humidity + humDelta)),
+      lastUpdate: `${Math.floor(Math.random() * 9) + 1} min`,
+    };
+  });
+  return sensorLocations;
+};
+
 export const getAqiLevel = (aqi: number) => {
   if (aqi <= 50) return { level: 1, label: "Dobar", labelEn: "Good", color: "#00E400" };
   if (aqi <= 100) return { level: 2, label: "Umeren", labelEn: "Moderate", color: "#FFFF00" };
