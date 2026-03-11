@@ -11,7 +11,7 @@ export interface SensorLocation {
   lastUpdate: string;
 }
 
-export const sensorLocations: SensorLocation[] = [
+export const baseSensorLocations: SensorLocation[] = [
   { id: 1, name: "Beograd - Centar", lat: 44.8176, lng: 20.4633, aqi: 156, pm25: 78, pm10: 112, temp: 18, humidity: 62, lastUpdate: "5 min" },
   { id: 2, name: "Novi Sad", lat: 45.2671, lng: 19.8335, aqi: 72, pm25: 28, pm10: 45, temp: 16, humidity: 58, lastUpdate: "3 min" },
   { id: 3, name: "Niš", lat: 43.3209, lng: 21.8958, aqi: 210, pm25: 120, pm10: 180, temp: 20, humidity: 55, lastUpdate: "8 min" },
